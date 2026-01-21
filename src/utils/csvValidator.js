@@ -22,11 +22,6 @@ function yearsBetween(start, end) {
   return years;
 }
 
-// If 'To date' is blank or undefined then store "9999-01-01" as default 'To date'
-function normalizeToDate(toDate) {
-  return !toDate || toDate === "-" ? "9999-01-01" : toDate;
-}
-
 // Validate a single CSV row
 function validateCsvRow(row, index) {
   const errors = [];

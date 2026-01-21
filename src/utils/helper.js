@@ -86,4 +86,9 @@ async function excelExport(data, res) {
   };
 }
 
-module.exports = { csvExport, excelExport };
+// If 'To date' is blank or undefined then store "9999-01-01" as default 'To date'
+function normalizeToDate(toDate) {
+  return !toDate || toDate === "-" ? "9999-01-01" : toDate;
+}
+
+module.exports = { csvExport, excelExport, normalizeToDate };
