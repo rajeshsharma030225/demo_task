@@ -115,25 +115,6 @@ class EmployeeRepository {
     };
   }
 
-  // static async getEmployeeSalaryGrowth(empNo) {
-  //   const sql = `
-  //   SELECT YEAR(s.from_date) as year, s.salary from employees emp
-  //   INNER JOIN salaries s ON emp.emp_no = s.emp_no
-  //   WHERE emp.emp_no = :empNo
-  //   ORDER BY s.from_date ASC
-  // `;
-
-  //   // Execute the query with replacements
-  //   const result = await sequelize.query(sql, {
-  //     replacements: {
-  //       empNo,
-  //     },
-  //     type: QueryTypes.SELECT,
-  //   });
-
-  //   return result;
-  // }
-
   // Fetch average salary of each department (current salaries only)
   static async getAverageSalaryOfDepartment() {
     // Average Salary based on current salary
