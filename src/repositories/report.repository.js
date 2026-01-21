@@ -67,23 +67,72 @@ class EmployeeRepository {
 
   // Fetch salary growth for a specific employee (yearly)
   static async getEmployeeSalaryGrowth(empNo) {
-    const sql = `
-    SELECT YEAR(s.from_date) as year, s.salary from employees emp
-    INNER JOIN salaries s ON emp.emp_no = s.emp_no
+    // Get basic employee details
+    const employeeSql = `
+    SELECT 
+      emp.emp_no AS 'Employee Number',
+      CONCAT(first_name, ' ', last_name) AS 'Full Name',
+      gender AS 'Gender',
+      hire_date AS 'Hire Date',
+      dept.dept_name AS 'Department Name',
+      t.title AS 'Job Title'
+    FROM employees emp
+    INNER JOIN dept_emp de ON emp.emp_no = de.emp_no AND de.to_date = '9999-01-01'
+    INNER JOIN departments dept ON dept.dept_no = de.dept_no
+    INNER JOIN titles t ON emp.emp_no = t.emp_no AND t.to_date = '9999-01-01'
     WHERE emp.emp_no = :empNo
-    ORDER BY s.from_date ASC
   `;
 
-    // Execute the query with replacements
-    const result = await sequelize.query(sql, {
-      replacements: {
-        empNo,
-      },
+    // Get year-wise salary history
+    const salarySql = `
+    SELECT 
+      YEAR(from_date) AS Year,
+      salary AS Salary
+    FROM salaries
+    WHERE emp_no = :empNo
+    ORDER BY from_date ASC
+  `;
+
+    // Fetch employee record
+    const [employee] = await sequelize.query(employeeSql, {
+      replacements: { empNo },
       type: QueryTypes.SELECT,
     });
 
-    return result;
+    // Return null if employee not found
+    if (!employee) return {};
+
+    // Fetch salary growth data
+    const salaryGrowth = await sequelize.query(salarySql, {
+      replacements: { empNo },
+      type: QueryTypes.SELECT,
+    });
+
+    // Build final response
+    return {
+      ...employee,
+      "Salary Growth": salaryGrowth,
+    };
   }
+
+  // static async getEmployeeSalaryGrowth(empNo) {
+  //   const sql = `
+  //   SELECT YEAR(s.from_date) as year, s.salary from employees emp
+  //   INNER JOIN salaries s ON emp.emp_no = s.emp_no
+  //   WHERE emp.emp_no = :empNo
+  //   ORDER BY s.from_date ASC
+  // `;
+
+  //   // Execute the query with replacements
+  //   const result = await sequelize.query(sql, {
+  //     replacements: {
+  //       empNo,
+  //     },
+  //     type: QueryTypes.SELECT,
+  //   });
+
+  //   return result;
+  // }
 
   // Fetch average salary of each department (current salaries only)
   static async getAverageSalaryOfDepartment() {

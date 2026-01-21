@@ -122,15 +122,14 @@ async function getSalaryGrowthOfEmployeeController(req, res) {
     // Get data of employee salary growth data for the given employee
     const data = await getSalaryGrowthOfEmployeeService(empNo);
 
+    // Determine response message based on data
+    const responseMessages = Object.keys(data).length
+      ? SUCCESS_MESSAGES.DATA_FOUND_SUCCESSFULLY
+      : ERROR_MESSAGES.DATA_NOT_FOUND;
+
     return res
       .status(StatusCodes.OK)
-      .json(
-        SuccessResponse(
-          StatusCodes.OK,
-          SUCCESS_MESSAGES.DATA_FOUND_SUCCESSFULLY,
-          data,
-        ),
-      );
+      .json(SuccessResponse(StatusCodes.OK, responseMessages, data));
   } catch (error) {
     // Handle unexpected errors
     console.error("Error at getSalaryGrowthOfEmployeeController ==", error);
