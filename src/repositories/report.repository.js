@@ -10,28 +10,25 @@ class EmployeeRepository {
     replacements,
   ) {
     const sql = `
-    SELECT 
-      emp.emp_no AS "Employee number",
-      CONCAT(emp.first_name, ' ', emp.last_name) AS "Full name",
-      emp.gender AS "Gender",
-      emp.hire_date AS "Hire date",
-      dpt.dept_name AS "Department name",
-      t.title AS "Job title",
-      s.salary AS "Salary",
-      s.from_date AS "From date",
-      s.to_date AS "To date"
-    FROM employees emp
-    INNER JOIN dept_emp dptemp ON dptemp.emp_no = emp.emp_no 
-    AND dptemp.to_date = '9999-01-01'
-    INNER JOIN departments dpt ON dpt.dept_no = dptemp.dept_no
-    INNER JOIN titles t ON t.emp_no = emp.emp_no
-    AND t.to_date = '9999-01-01'
-    INNER JOIN salaries s ON s.emp_no = emp.emp_no
-    AND s.to_date = '9999-01-01'
-    ${whereClause}
-    ${orderByClause}
-    ${limitClause}
-  `;
+      SELECT
+        emp.emp_no AS "Employee number",
+        CONCAT(emp.first_name, ' ', emp.last_name) AS "Full name",
+        emp.gender AS "Gender",
+        emp.hire_date AS "Hire date",
+        dpt.dept_name AS "Department name",
+        t.title AS "Job title",
+        s.salary AS "Salary",
+        s.from_date AS "From date",
+        s.to_date AS "To date"
+      FROM employees emp
+      INNER JOIN dept_emp dptemp ON dptemp.emp_no = emp.emp_no
+      INNER JOIN departments dpt ON dpt.dept_no = dptemp.dept_no
+      INNER JOIN titles t ON t.emp_no = emp.emp_no
+      INNER JOIN salaries s ON s.emp_no = emp.emp_no
+      ${whereClause}
+      ${orderByClause}
+      ${limitClause}
+    `;
 
     // Execute the query with replacements
     return sequelize.query(sql, {
@@ -45,13 +42,10 @@ class EmployeeRepository {
     const sql = `
     SELECT COUNT(*) AS total
     FROM employees emp
-    INNER JOIN dept_emp dptemp ON dptemp.emp_no = emp.emp_no 
-    AND dptemp.to_date = '9999-01-01'
+    INNER JOIN dept_emp dptemp ON dptemp.emp_no = emp.emp_no
     INNER JOIN departments dpt ON dpt.dept_no = dptemp.dept_no
     INNER JOIN titles t ON t.emp_no = emp.emp_no
-    AND t.to_date = '9999-01-01'
     INNER JOIN salaries s ON s.emp_no = emp.emp_no
-    AND s.to_date = '9999-01-01'
     ${whereClause}
   `;
 

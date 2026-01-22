@@ -32,11 +32,6 @@ async function getEmployeeReportService(
     const sortColumn = sortFields[sortBy] || sortFields.empNo;
     orderByClause = `ORDER BY ${sortColumn} ${sortOrder}`;
   }
-  // // Resolve sort column (default: employee number)
-  // const sortColumn = sortFields[sortBy] || sortFields.empNo;
-
-  // // ORDER BY clause
-  // const orderByClause = `ORDER BY ${sortColumn} ${sortOrder}`;
 
   // Default WHERE condition (only active employees)
   const conditions = ["emp.is_active = true"];
@@ -112,6 +107,17 @@ async function getEmployeeReportService(
     gender,
     search,
   };
+
+  const hasAnyFilter = Object.values(filters).some(
+    (v) => v !== undefined && v !== null && v !== "",
+  );
+
+  if (!hasAnyFilter) {
+    // If no filters provided, return active records only
+    conditions.push("dptemp.to_date = '9999-01-01'");
+    conditions.push("t.to_date = '9999-01-01'");
+    conditions.push("s.to_date = '9999-01-01'");
+  }
 
   // Apply filters dynamically
   Object.entries(filters).forEach(([key, value]) => {
