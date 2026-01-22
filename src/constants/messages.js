@@ -5,6 +5,7 @@ const ERROR_MESSAGES = {
   CSV_FILE_IS_REQUIRED: "Csv file is required",
   CSV_VALIDATION_FAILED: "CSV validation failed",
   INVALID_CSV_FILE: "Invalid Csv File",
+  INVALID_SORTBY_FIELD: "Invalid sort field",
 };
 
 const SUCCESS_MESSAGES = {

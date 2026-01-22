@@ -1,4 +1,8 @@
+const { StatusCodes } = require("http-status-codes");
 const EmployeeRepository = require("../repositories/report.repository");
+const { ErrorResponse } = require("../common/response");
+const { ERROR_MESSAGES } = require("../constants/messages");
+const { SORT_FIELDS } = require("../constants/values");
 
 async function getEmployeeReportService(
   page,
@@ -14,13 +18,6 @@ async function getEmployeeReportService(
   sortBy,
   sortOrder,
 ) {
-  // Mapping allowed sort fields to actual DB columns
-  const sortFields = {
-    empNo: "emp.emp_no",
-    hireDate: "emp.hire_date",
-    salary: "s.salary",
-    department: "dpt.dept_name",
-  };
   let orderByClause;
 
   // If sortBy with department, then applied order to department and employee number
@@ -29,7 +26,7 @@ async function getEmployeeReportService(
     ORDER BY dpt.dept_name ${sortOrder}, emp.emp_no ${sortOrder}
   `;
   } else {
-    const sortColumn = sortFields[sortBy] || sortFields.empNo;
+    const sortColumn = SORT_FIELDS[sortBy] || SORT_FIELDS.empNo;
     orderByClause = `ORDER BY ${sortColumn} ${sortOrder}`;
   }
 

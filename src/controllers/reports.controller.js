@@ -8,6 +8,7 @@ const {
   getHistoricalDataOfEmployeeService,
 } = require("../services/reports.services");
 const { csvExport, excelExport } = require("../utils/helper");
+const { SORT_FIELDS } = require("../constants/values");
 
 async function getReportsEmployeeController(req, res) {
   try {
@@ -30,6 +31,19 @@ async function getReportsEmployeeController(req, res) {
 
     // Check if this request is for export (CSV or Excel)
     const isExport = ["csv", "excel"].includes(exportIn?.toLowerCase());
+
+    // Mapping allowed sort fields to actual DB columns
+
+    if (req.query.sortBy && !SORT_FIELDS[req.query.sortBy]) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json(
+          ErrorResponse(
+            StatusCodes.BAD_REQUEST,
+            ERROR_MESSAGES.INVALID_SORTBY_FIELD,
+          ),
+        );
+    }
 
     // Sorting parameters
     const sortBy = req.query.sortBy || "emp_no";

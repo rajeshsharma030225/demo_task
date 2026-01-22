@@ -42,4 +42,16 @@ const REQUIRED_HEADERS = [
   "To date",
 ];
 
-module.exports = { EMPLOYEE_EXPORT_HEADERS, ALLOWED_KEYS, REQUIRED_HEADERS };
+const SORT_FIELDS = {
+  empNo: "emp.emp_no",
+  hireDate: "emp.hire_date",
+  salary: "s.salary",
+  department: "dpt.dept_name",
+};
+
+module.exports = {
+  EMPLOYEE_EXPORT_HEADERS,
+  ALLOWED_KEYS,
+  REQUIRED_HEADERS,
+  SORT_FIELDS,
+};
