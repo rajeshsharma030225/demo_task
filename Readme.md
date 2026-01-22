@@ -50,7 +50,7 @@ Query Parameters (Optional)
     minSalary,
     maxSalary,
     gender,
-    sortBy, (empNo, hireDate, salary, departmentName)
+    sortBy, (empNo, hireDate, salary, department)
     sortOrder,(ASC or DESC)
     exportIn (csv or excel)
 ]

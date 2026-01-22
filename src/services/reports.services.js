@@ -19,13 +19,24 @@ async function getEmployeeReportService(
     empNo: "emp.emp_no",
     hireDate: "emp.hire_date",
     salary: "s.salary",
-    departmentName: "dpt.dept_name",
+    department: "dpt.dept_name",
   };
-  // Resolve sort column (default: employee number)
-  const sortColumn = sortFields[sortBy] || sortFields.empNo;
+  let orderByClause;
 
-  // ORDER BY clause
-  const orderByClause = `ORDER BY ${sortColumn} ${sortOrder}`;
+  // If sortBy with department, then applied order to department and employee number
+  if (sortBy === "department") {
+    orderByClause = `
+    ORDER BY dpt.dept_name ${sortOrder}, emp.emp_no ${sortOrder}
+  `;
+  } else {
+    const sortColumn = sortFields[sortBy] || sortFields.empNo;
+    orderByClause = `ORDER BY ${sortColumn} ${sortOrder}`;
+  }
+  // // Resolve sort column (default: employee number)
+  // const sortColumn = sortFields[sortBy] || sortFields.empNo;
+
+  // // ORDER BY clause
+  // const orderByClause = `ORDER BY ${sortColumn} ${sortOrder}`;
 
   // Default WHERE condition (only active employees)
   const conditions = ["emp.is_active = true"];
