@@ -1,5 +1,6 @@
 const { query, validationResult } = require("express-validator");
 const { ALLOWED_KEYS } = require("../constants/values");
+const { ERROR_MESSAGES } = require("../constants/messages");
 
 // Middleware to reject any unknown query params
 function rejectUnknownQueryParams(req, res, next) {
@@ -26,60 +27,60 @@ const validateExportQuery = [
   query("exportIn")
     .optional()
     .isIn(["csv", "excel"])
-    .withMessage("exportIn must be either csv or excel"),
+    .withMessage(ERROR_MESSAGES.EXPORTIN_MUST_BE_CSV_OR_EXCEL),
 
   // Validate search text (optional, cannot be empty if provided)
   query("search")
     .optional()
     .trim()
     .notEmpty()
-    .withMessage("search cannot be empty"),
+    .withMessage(ERROR_MESSAGES.SEARCH_CANNOT_BE_EMPTY),
 
   // Validate department filter (optional, cannot be empty if provided)
   query("department")
     .optional()
     .trim()
     .notEmpty()
-    .withMessage("department cannot be empty"),
+    .withMessage(ERROR_MESSAGES.DEPARTMENT_CANNOT_BE_EMPTY),
 
   // Validate job title filter (optional, cannot be empty if provided)
   query("jobTitle")
     .optional()
     .trim()
     .notEmpty()
-    .withMessage("jobTitle cannot be empty"),
+    .withMessage(ERROR_MESSAGES.JOBTITLE_CANNOT_BE_EMPTY),
 
   // Validate minimum salary (optional, must be positive integer)
   query("minSalary")
     .optional()
     .isInt({ min: 0 })
-    .withMessage("minSalary must be a positive number")
+    .withMessage(ERROR_MESSAGES.MINSALARY_MUST_BE_POSITIVE_NUMBER)
     .toInt(),
 
   // Validate maximum salary (optional, must be positive integer)
   query("maxSalary")
     .optional()
     .isInt({ min: 0 })
-    .withMessage("maxSalary must be a positive number")
+    .withMessage(ERROR_MESSAGES.MAXSALARY_MUST_BE_POSITIVE_NUMBER)
     .toInt(),
 
   // Validate gender filter (optional, must be 'M' or 'F')
   query("gender")
     .optional()
     .isIn(["M", "F"])
-    .withMessage("gender must be either M or F"),
+    .withMessage(ERROR_MESSAGES.GENDER_MUST_BE_M_OR_F),
 
   // Validate hire start date (optional, must be valid ISO date YYYY-MM-DD)
   query("hireStartDate")
     .optional()
     .isISO8601({ strict: true })
-    .withMessage("hireStartDate must be a valid date (YYYY-MM-DD)"),
+    .withMessage(ERROR_MESSAGES.HIRE_START_DATE_INVALID),
 
   // Validate hire end date (optional, must be valid ISO date YYYY-MM-DD)
   query("hireEndDate")
     .optional()
     .isISO8601({ strict: true })
-    .withMessage("hireEndDate must be a valid date (YYYY-MM-DD)"),
+    .withMessage(ERROR_MESSAGES.HIRE_END_DATE_INVALID),
 
   // Final middleware to handle validation result
   (req, res, next) => {
@@ -94,7 +95,9 @@ const validateExportQuery = [
       return res.status(400).json({
         // If only one error, show that directly
         message:
-          messages.length === 1 ? messages[0] : "Invalid query parameters",
+          messages.length === 1
+            ? messages[0]
+            : ERROR_MESSAGES.INVALID_QUERY_PARAMETERS,
 
         // If multiple errors, include the full list
         ...(messages.length > 1 && { details: messages }),
@@ -113,7 +116,7 @@ const validateExportQuery = [
       minSalary > maxSalary
     ) {
       return res.status(400).json({
-        message: "minSalary cannot be greater than maxSalary",
+        message: ERROR_MESSAGES.MINSALARY_CANNOT_BE_GREATER_THAN_MAXSALARY,
       });
     }
 
@@ -124,7 +127,7 @@ const validateExportQuery = [
       new Date(hireStartDate) > new Date(hireEndDate)
     ) {
       return res.status(400).json({
-        message: "hireStartDate cannot be later than hireEndDate",
+        message: ERROR_MESSAGES.HIRE_START_DATE_CANNOT_BE_LATER_THAN_END_DATE,
       });
     }
 
